@@ -312,7 +312,7 @@ pub fn run_dataset(cfg: &BenchConfig, variant: VsaVariant, dataset_path: &Path) 
     // --- SparseVec dataset ops (always included) ---
     {
         reader.reset()?;
-        let mut it = reader.by_ref();
+        let it = reader.by_ref();
         let mut i = 0u64;
         let start = Instant::now();
         while i < pairs {
@@ -339,7 +339,7 @@ pub fn run_dataset(cfg: &BenchConfig, variant: VsaVariant, dataset_path: &Path) 
     }
     {
         reader.reset()?;
-        let mut it = reader.by_ref();
+        let it = reader.by_ref();
         let mut i = 0u64;
         let start = Instant::now();
         while i < pairs {
@@ -366,7 +366,7 @@ pub fn run_dataset(cfg: &BenchConfig, variant: VsaVariant, dataset_path: &Path) 
     }
     {
         reader.reset()?;
-        let mut it = reader.by_ref();
+        let it = reader.by_ref();
         let mut i = 0u64;
         let start = Instant::now();
         while i < pairs {
@@ -425,7 +425,7 @@ pub fn run_dataset(cfg: &BenchConfig, variant: VsaVariant, dataset_path: &Path) 
 
         // bind
         reader.reset()?;
-        let mut it = reader.by_ref();
+        let it = reader.by_ref();
         let mut i = 0u64;
         let start = Instant::now();
         while i < pairs {
@@ -454,7 +454,7 @@ pub fn run_dataset(cfg: &BenchConfig, variant: VsaVariant, dataset_path: &Path) 
 
         // dot
         reader.reset()?;
-        let mut it = reader.by_ref();
+        let it = reader.by_ref();
         let mut i = 0u64;
         let start = Instant::now();
         while i < pairs {
@@ -486,7 +486,7 @@ pub fn run_dataset(cfg: &BenchConfig, variant: VsaVariant, dataset_path: &Path) 
     if run_bitsliced {
         // bundle
         reader.reset()?;
-        let mut it = reader.by_ref();
+        let it = reader.by_ref();
         let mut i = 0u64;
         let start = Instant::now();
         while i < pairs {
@@ -515,7 +515,7 @@ pub fn run_dataset(cfg: &BenchConfig, variant: VsaVariant, dataset_path: &Path) 
 
         // bind
         reader.reset()?;
-        let mut it = reader.by_ref();
+        let it = reader.by_ref();
         let mut i = 0u64;
         let start = Instant::now();
         while i < pairs {
@@ -544,7 +544,7 @@ pub fn run_dataset(cfg: &BenchConfig, variant: VsaVariant, dataset_path: &Path) 
 
         // cosine
         reader.reset()?;
-        let mut it = reader.by_ref();
+        let it = reader.by_ref();
         let mut i = 0u64;
         let start = Instant::now();
         while i < pairs {
@@ -575,7 +575,7 @@ pub fn run_dataset(cfg: &BenchConfig, variant: VsaVariant, dataset_path: &Path) 
     // --- Hybrid dataset ops ---
     if run_hybrid {
         reader.reset()?;
-        let mut it = reader.by_ref();
+        let it = reader.by_ref();
         let mut i = 0u64;
         let start = Instant::now();
         while i < triples {
@@ -615,7 +615,7 @@ pub fn run_dataset(cfg: &BenchConfig, variant: VsaVariant, dataset_path: &Path) 
     if run_block_sparse {
         // bind
         reader.reset()?;
-        let mut it = reader.by_ref();
+        let it = reader.by_ref();
         let mut i = 0u64;
         let start = Instant::now();
         while i < pairs {
@@ -644,7 +644,7 @@ pub fn run_dataset(cfg: &BenchConfig, variant: VsaVariant, dataset_path: &Path) 
 
         // bundle
         reader.reset()?;
-        let mut it = reader.by_ref();
+        let it = reader.by_ref();
         let mut i = 0u64;
         let start = Instant::now();
         while i < pairs {
@@ -673,7 +673,7 @@ pub fn run_dataset(cfg: &BenchConfig, variant: VsaVariant, dataset_path: &Path) 
 
         // cosine
         reader.reset()?;
-        let mut it = reader.by_ref();
+        let it = reader.by_ref();
         let mut i = 0u64;
         let start = Instant::now();
         while i < pairs {
@@ -702,7 +702,7 @@ pub fn run_dataset(cfg: &BenchConfig, variant: VsaVariant, dataset_path: &Path) 
 
         // bundle_many (3 vectors)
         reader.reset()?;
-        let mut it = reader.by_ref();
+        let it = reader.by_ref();
         let mut i = 0u64;
         let start = Instant::now();
         while i < triples {

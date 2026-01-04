@@ -1,8 +1,8 @@
 use crate::schema::Measurement;
 use crate::{harness::BenchConfig, harness::measure_fn};
-use embeddenator::fs::fs::embrfs::EmbrFS;
-use embeddenator::io::envelope::{BinaryWriteOptions, CompressionCodec, PayloadKind, wrap_or_legacy};
-use embeddenator::vsa::vsa::ReversibleVSAConfig;
+use embeddenator::EmbrFS;
+use embeddenator::{BinaryWriteOptions, CompressionCodec, PayloadKind, envelope};
+use embeddenator::ReversibleVSAConfig;
 use serde_json::json;
 use sha2::{Digest, Sha256};
 use std::collections::BTreeMap;
@@ -146,7 +146,7 @@ pub fn run(cfg: &BenchConfig, args: &EncodeArgs) -> io::Result<Vec<Measurement>>
             codec: args.codec,
             level: args.codec_level,
         };
-        let wrapped = wrap_or_legacy(PayloadKind::EngramBincode, opts, &engram_bincode)?;
+        let wrapped = envelope::wrap_or_legacy(PayloadKind::EngramBincode, opts, &engram_bincode)?;
 
         let stats = fsys.correction_stats();
 
