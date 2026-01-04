@@ -1,8 +1,8 @@
 use crate::harness::{measure_fn, BenchConfig, Profile};
 use crate::schema::Measurement;
-use embeddenator::embrfs::EmbrFS;
+use embeddenator::fs::fs::embrfs::EmbrFS;
 use embeddenator::retrieval::RerankedResult;
-use embeddenator::vsa::ReversibleVSAConfig;
+use embeddenator::vsa::vsa::ReversibleVSAConfig;
 use rayon::prelude::*;
 use serde_json::json;
 use std::cmp::Ordering;

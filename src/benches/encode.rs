@@ -1,8 +1,8 @@
 use crate::schema::Measurement;
 use crate::{harness::BenchConfig, harness::measure_fn};
-use embeddenator::embrfs::EmbrFS;
-use embeddenator::envelope::{BinaryWriteOptions, CompressionCodec, PayloadKind, wrap_or_legacy};
-use embeddenator::vsa::ReversibleVSAConfig;
+use embeddenator::fs::fs::embrfs::EmbrFS;
+use embeddenator::io::envelope::{BinaryWriteOptions, CompressionCodec, PayloadKind, wrap_or_legacy};
+use embeddenator::vsa::vsa::ReversibleVSAConfig;
 use serde_json::json;
 use sha2::{Digest, Sha256};
 use std::collections::BTreeMap;
