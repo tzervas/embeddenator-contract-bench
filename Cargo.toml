@@ -26,7 +26,7 @@ bincode = "1.3"
 [features]
 default = []
 # Pass-through to enable compression codecs used by encode benches.
-compression = ["embeddenator-io/full-compression"]
+compression = ["embeddenator-io"]
 
 [[bin]]
 name = "embeddenator-contract-bench"
