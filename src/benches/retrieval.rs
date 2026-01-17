@@ -1,7 +1,7 @@
 use crate::harness::{measure_fn, BenchConfig, Profile};
 use crate::schema::Measurement;
-use embeddenator::EmbrFS;
 use embeddenator::retrieval::RerankedResult;
+use embeddenator::EmbrFS;
 use embeddenator::ReversibleVSAConfig;
 use rayon::prelude::*;
 use serde_json::json;
@@ -50,7 +50,9 @@ pub fn run(cfg: &BenchConfig, args: &RetrievalArgs) -> io::Result<Vec<Measuremen
     }
 
     let k = args.k.max(1).min(chunks);
-    let candidate_k = (k.saturating_mul(args.candidate_factor)).max(50).min(chunks);
+    let candidate_k = (k.saturating_mul(args.candidate_factor))
+        .max(50)
+        .min(chunks);
 
     let queries = match (cfg.profile, args.queries) {
         (_, Some(q)) => q,
@@ -61,7 +63,8 @@ pub fn run(cfg: &BenchConfig, args: &RetrievalArgs) -> io::Result<Vec<Measuremen
     .min(chunks);
 
     // Deterministic queries: take first N vectors.
-    let query_vecs: Vec<(usize, embeddenator::SparseVec)> = codebook.iter().take(queries).cloned().collect();
+    let query_vecs: Vec<(usize, embeddenator::SparseVec)> =
+        codebook.iter().take(queries).cloned().collect();
 
     let warmup = cfg.warmup_iters().min(10);
     let iters = 1; // One measured pass over all queries.

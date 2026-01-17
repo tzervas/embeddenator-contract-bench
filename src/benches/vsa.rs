@@ -1,7 +1,9 @@
 use crate::harness::{measure_fn, BenchConfig};
 use crate::schema::Measurement;
 use crate::VsaVariant;
-use embeddenator::{BitslicedTritVec, BlockSparseTritVec, CarrySaveBundle, PackedTritVec, ReversibleVSAConfig, SparseVec, DIM};
+// Note: Some internal VSA types are not exposed in embeddenator public API
+// use embeddenator::{BitslicedTritVec, BlockSparseTritVec, CarrySaveBundle, PackedTritVec, ReversibleVSAConfig, SparseVec, DIM};
+use embeddenator::{PackedTritVec, ReversibleVSAConfig, SparseVec, DIM};
 use serde_json::json;
 use std::hint::black_box;
 use std::io;
@@ -18,12 +20,13 @@ pub fn run(cfg: &BenchConfig, variant: VsaVariant) -> Vec<Measurement> {
     // Deterministic base vectors.
     let a = SparseVec::encode_data(b"alpha", &config, Some("/bench/vsa"));
     let b = SparseVec::encode_data(b"beta", &config, Some("/bench/vsa"));
-    let c = SparseVec::encode_data(b"gamma", &config, Some("/bench/vsa"));
+    let _c = SparseVec::encode_data(b"gamma", &config, Some("/bench/vsa"));
 
     let run_packed = matches!(variant, VsaVariant::All | VsaVariant::Packed);
-    let run_bitsliced = matches!(variant, VsaVariant::All | VsaVariant::Bitsliced);
-    let run_hybrid = matches!(variant, VsaVariant::All | VsaVariant::Hybrid);
-    let run_block_sparse = matches!(variant, VsaVariant::All | VsaVariant::BlockSparse);
+    // Note: BitslicedTritVec, CarrySaveBundle, and BlockSparseTritVec not exposed in public API
+    // let run_bitsliced = matches!(variant, VsaVariant::All | VsaVariant::Bitsliced);
+    // let run_hybrid = matches!(variant, VsaVariant::All | VsaVariant::Hybrid);
+    // let run_block_sparse = matches!(variant, VsaVariant::All | VsaVariant::BlockSparse);
 
     let mut out = Vec::new();
 
@@ -122,6 +125,9 @@ pub fn run(cfg: &BenchConfig, variant: VsaVariant) -> Vec<Measurement> {
         }
     }
 
+    // Note: Bitsliced, Hybrid, and BlockSparse VSA operations temporarily disabled
+    // as these types are not exposed in the public embeddenator API
+    /*
     if run_bitsliced {
         let ba = BitslicedTritVec::from_sparse(&a, DIM);
         let bb = BitslicedTritVec::from_sparse(&b, DIM);
@@ -278,6 +284,7 @@ pub fn run(cfg: &BenchConfig, variant: VsaVariant) -> Vec<Measurement> {
             });
         }
     }
+    */
 
     out
 }
@@ -289,7 +296,11 @@ fn dataset_ops_for_profile(cfg: &BenchConfig, available: u64) -> u64 {
     }
 }
 
-pub fn run_dataset(cfg: &BenchConfig, variant: VsaVariant, dataset_path: &Path) -> io::Result<Vec<Measurement>> {
+pub fn run_dataset(
+    cfg: &BenchConfig,
+    variant: VsaVariant,
+    dataset_path: &Path,
+) -> io::Result<Vec<Measurement>> {
     let mut reader = DatasetReader::open(dataset_path)?;
     let meta = reader.meta().clone();
     let dim = meta.dimension as usize;
@@ -300,12 +311,12 @@ pub fn run_dataset(cfg: &BenchConfig, variant: VsaVariant, dataset_path: &Path) 
 
     // For hybrid we process triples (a,b,c).
     let available_triples = meta.count.saturating_sub(2) / 3;
-    let triples = dataset_ops_for_profile(cfg, available_triples);
+    let _triples = dataset_ops_for_profile(cfg, available_triples);
 
     let run_packed = matches!(variant, VsaVariant::All | VsaVariant::Packed);
-    let run_bitsliced = matches!(variant, VsaVariant::All | VsaVariant::Bitsliced);
-    let run_hybrid = matches!(variant, VsaVariant::All | VsaVariant::Hybrid);
-    let run_block_sparse = matches!(variant, VsaVariant::All | VsaVariant::BlockSparse);
+    let _run_bitsliced = matches!(variant, VsaVariant::All | VsaVariant::Bitsliced);
+    let _run_hybrid = matches!(variant, VsaVariant::All | VsaVariant::Hybrid);
+    let _run_block_sparse = matches!(variant, VsaVariant::All | VsaVariant::BlockSparse);
 
     let mut out = Vec::new();
 
@@ -316,8 +327,14 @@ pub fn run_dataset(cfg: &BenchConfig, variant: VsaVariant, dataset_path: &Path) 
         let mut i = 0u64;
         let start = Instant::now();
         while i < pairs {
-            let a = it.next().transpose()?.ok_or_else(|| io::Error::other("unexpected EOF"))?;
-            let b = it.next().transpose()?.ok_or_else(|| io::Error::other("unexpected EOF"))?;
+            let a = it
+                .next()
+                .transpose()?
+                .ok_or_else(|| io::Error::other("unexpected EOF"))?;
+            let b = it
+                .next()
+                .transpose()?
+                .ok_or_else(|| io::Error::other("unexpected EOF"))?;
             black_box(a.bundle(&b));
             i += 1;
         }
@@ -343,8 +360,14 @@ pub fn run_dataset(cfg: &BenchConfig, variant: VsaVariant, dataset_path: &Path) 
         let mut i = 0u64;
         let start = Instant::now();
         while i < pairs {
-            let a = it.next().transpose()?.ok_or_else(|| io::Error::other("unexpected EOF"))?;
-            let b = it.next().transpose()?.ok_or_else(|| io::Error::other("unexpected EOF"))?;
+            let a = it
+                .next()
+                .transpose()?
+                .ok_or_else(|| io::Error::other("unexpected EOF"))?;
+            let b = it
+                .next()
+                .transpose()?
+                .ok_or_else(|| io::Error::other("unexpected EOF"))?;
             black_box(a.bind(&b));
             i += 1;
         }
@@ -370,8 +393,14 @@ pub fn run_dataset(cfg: &BenchConfig, variant: VsaVariant, dataset_path: &Path) 
         let mut i = 0u64;
         let start = Instant::now();
         while i < pairs {
-            let a = it.next().transpose()?.ok_or_else(|| io::Error::other("unexpected EOF"))?;
-            let b = it.next().transpose()?.ok_or_else(|| io::Error::other("unexpected EOF"))?;
+            let a = it
+                .next()
+                .transpose()?
+                .ok_or_else(|| io::Error::other("unexpected EOF"))?;
+            let b = it
+                .next()
+                .transpose()?
+                .ok_or_else(|| io::Error::other("unexpected EOF"))?;
             black_box(a.cosine(&b));
             i += 1;
         }
@@ -400,8 +429,14 @@ pub fn run_dataset(cfg: &BenchConfig, variant: VsaVariant, dataset_path: &Path) 
         let mut i = 0u64;
         let start = Instant::now();
         while i < pairs {
-            let a = it.next().transpose()?.ok_or_else(|| io::Error::other("unexpected EOF"))?;
-            let b = it.next().transpose()?.ok_or_else(|| io::Error::other("unexpected EOF"))?;
+            let a = it
+                .next()
+                .transpose()?
+                .ok_or_else(|| io::Error::other("unexpected EOF"))?;
+            let b = it
+                .next()
+                .transpose()?
+                .ok_or_else(|| io::Error::other("unexpected EOF"))?;
             let pa = PackedTritVec::from_sparsevec(&a, dim);
             let pb = PackedTritVec::from_sparsevec(&b, dim);
             black_box(pa.bundle(&pb));
@@ -429,8 +464,14 @@ pub fn run_dataset(cfg: &BenchConfig, variant: VsaVariant, dataset_path: &Path) 
         let mut i = 0u64;
         let start = Instant::now();
         while i < pairs {
-            let a = it.next().transpose()?.ok_or_else(|| io::Error::other("unexpected EOF"))?;
-            let b = it.next().transpose()?.ok_or_else(|| io::Error::other("unexpected EOF"))?;
+            let a = it
+                .next()
+                .transpose()?
+                .ok_or_else(|| io::Error::other("unexpected EOF"))?;
+            let b = it
+                .next()
+                .transpose()?
+                .ok_or_else(|| io::Error::other("unexpected EOF"))?;
             let pa = PackedTritVec::from_sparsevec(&a, dim);
             let pb = PackedTritVec::from_sparsevec(&b, dim);
             black_box(pa.bind(&pb));
@@ -458,8 +499,14 @@ pub fn run_dataset(cfg: &BenchConfig, variant: VsaVariant, dataset_path: &Path) 
         let mut i = 0u64;
         let start = Instant::now();
         while i < pairs {
-            let a = it.next().transpose()?.ok_or_else(|| io::Error::other("unexpected EOF"))?;
-            let b = it.next().transpose()?.ok_or_else(|| io::Error::other("unexpected EOF"))?;
+            let a = it
+                .next()
+                .transpose()?
+                .ok_or_else(|| io::Error::other("unexpected EOF"))?;
+            let b = it
+                .next()
+                .transpose()?
+                .ok_or_else(|| io::Error::other("unexpected EOF"))?;
             let pa = PackedTritVec::from_sparsevec(&a, dim);
             let pb = PackedTritVec::from_sparsevec(&b, dim);
             black_box(pa.dot(&pb));
@@ -482,7 +529,9 @@ pub fn run_dataset(cfg: &BenchConfig, variant: VsaVariant, dataset_path: &Path) 
         });
     }
 
-    // --- Bitsliced dataset ops ---
+    // --- Bitsliced and Hybrid dataset ops ---
+    // Note: BitslicedTritVec and CarrySaveBundle not exposed in public API - temporarily disabled
+    /*
     if run_bitsliced {
         // bundle
         reader.reset()?;
@@ -608,10 +657,13 @@ pub fn run_dataset(cfg: &BenchConfig, variant: VsaVariant, dataset_path: &Path) 
             extra: json!({"dim": dim, "dataset": dataset_path.display().to_string(), "vectors": meta.count, "ops": triples, "ops_per_s": ops_per_s, "n": 3}),
         });
     }
+    */
 
     // --- Block-sparse dataset ops ---
     // Block-sparse is optimized for large dimensions (100K+) with low density (<1%).
     // At smaller dimensions, bitsliced may outperform.
+    // Note: BlockSparseTritVec not exposed in public API - temporarily disabled
+    /*
     if run_block_sparse {
         // bind
         reader.reset()?;
@@ -732,6 +784,7 @@ pub fn run_dataset(cfg: &BenchConfig, variant: VsaVariant, dataset_path: &Path) 
             extra: json!({"dim": dim, "dataset": dataset_path.display().to_string(), "vectors": meta.count, "ops": triples, "ops_per_s": ops_per_s, "n": 3}),
         });
     }
+    */
 
     Ok(out)
 }

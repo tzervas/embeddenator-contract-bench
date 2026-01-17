@@ -1,0 +1,58 @@
+# Embeddenator Contract Bench - Development Context
+
+## Active Technologies
+- **Rust**: Stable toolchain (edition 2021)
+- **Benchmarking**: Deterministic "contract benchmarks" for VSA operations
+- **Baseline Comparison**: Snapshot-based performance regression detection
+- **CI Integration**: Automated benchmarking in CI pipelines
+
+## Project Structure
+```
+embeddenator-contract-bench/
+├── src/
+│   └── main.rs          # Contract benchmark binary
+├── benches/             # Benchmark definitions
+├── baselines/           # Baseline snapshots for comparison
+├── bench_results/       # Runtime benchmark outputs (gitignored)
+├── Cargo.toml           # Internal crate (not published)
+└── README.md            # Alpha/maintainers-only status
+```
+
+## Commands
+- **Run**: `cargo run -p embeddenator-contract-bench --release -- --help`
+- **Build**: `cargo build -p embeddenator-contract-bench --release`
+- **Test**: `cargo test -p embeddenator-contract-bench`
+- **Compare Baselines**: `cargo run --release -- compare --baseline baselines/snapshot.json`
+- **Check**: `cargo clippy -p embeddenator-contract-bench`
+
+## Code Conventions
+- **Deterministic Benchmarks**: Use fixed input sizes and seeds for reproducibility
+- **Baseline Snapshots**: Store baseline results in `baselines/` directory (checked into git)
+- **Result Format**: Output JSON for programmatic comparison (CI automation)
+- **Minimal Variance**: Avoid non-deterministic operations (random allocations, wall-clock time)
+- **CI Integration**: Fail CI if performance regresses beyond threshold (e.g., >10% slower)
+
+## Current Focus
+- **Contract Benchmarking**: Stable, reproducible benchmarks for VSA operations
+- **Regression Detection**: Automated comparison against baseline snapshots
+- **Cross-Environment Consistency**: Validate results across different hardware (x86_64, ARM64)
+- **CI Integration**: GitHub Actions workflow for continuous performance monitoring
+- **Baseline Management**: Version baseline snapshots with git tags
+
+## Recent Changes
+- Created as internal maintainer tooling for performance tracking
+- Alpha status (not published to crates.io)
+- Defined deterministic benchmark suite for ingest/extract/query operations
+- Implemented baseline snapshot comparison logic
+- Integrated with CI pipelines for automated regression detection
+
+## Agents
+- Embeddenator Agent (`embeddenator/.github/agents/embeddenator.agent.md`): VSA/engram/Rust integration expert
+- Performance Tuner (`embeddenator/.github/agents/performance-tuner.agent.md`): Profiling and optimization
+
+## Related Documentation
+- [WORKSPACE_TRACKER.md](/WORKSPACE_TRACKER.md): Multi-repo state tracker
+- [SPEC_KIT_INTEGRATION.md](/SPEC_KIT_INTEGRATION.md): Specification-Driven Development (SDD) workflow
+- [PERF_TUNING_PHASE1.md](/embeddenator/PERF_TUNING_PHASE1.md): Performance tuning strategy
+- [PROFILING_TOOLKIT.md](/embeddenator/PROFILING_TOOLKIT.md): Profiling tools and workflows
+- [baselines/snapshots/](/embeddenator/baselines/snapshots/): Baseline performance data
