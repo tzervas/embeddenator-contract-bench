@@ -191,7 +191,7 @@ cargo bench -- --baseline my-baseline
 These are order-of-magnitude estimates. **Actual performance varies significantly** based on hardware, vector density, data patterns, and system configuration.
 
 - **Bundle operations**: O(n) with sparsity
-- **Bind operations**: O(n) with sparsity  
+- **Bind operations**: O(n) with sparsity
 - **Cosine similarity**: O(n) with sparsity
 - **Index construction**: O(n log n)
 - **Top-k query**: O(k log k + m)
