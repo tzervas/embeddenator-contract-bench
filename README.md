@@ -188,13 +188,16 @@ cargo bench -- --baseline my-baseline
 
 ### Expected Performance Characteristics
 
-- **Bundle operations**: O(n) with sparsity, ~100-500ns for typical vectors
-- **Bind operations**: O(n) with sparsity, ~100-500ns for typical vectors
-- **Cosine similarity**: O(n) with sparsity, ~50-200ns for typical vectors
-- **Index construction**: O(n log n), ~1-5µs per vector
-- **Top-k query**: O(k log k + m), ~10-50µs for k=20
+These are order-of-magnitude estimates. **Actual performance varies significantly** based on hardware, vector density, data patterns, and system configuration.
+
+- **Bundle operations**: O(n) with sparsity
+- **Bind operations**: O(n) with sparsity  
+- **Cosine similarity**: O(n) with sparsity
+- **Index construction**: O(n log n)
+- **Top-k query**: O(k log k + m)
 - **Hierarchical bundling**: O(n) with chunking overhead
-- **SIMD acceleration**: 2-4x speedup over scalar (when available)
+
+> Run `cargo bench` to measure performance on your specific system.
 
 ### Performance Regression Detection
 
