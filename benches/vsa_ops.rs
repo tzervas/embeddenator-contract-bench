@@ -7,7 +7,7 @@
 //! - Chain operations and performance characteristics
 
 use criterion::{black_box, criterion_group, criterion_main, BenchmarkId, Criterion};
-use embeddenator::{ReversibleVSAConfig, SparseVec, DIM};
+use embeddenator_vsa::{ReversibleVSAConfig, SparseVec};
 
 /// Benchmark fundamental SparseVec operations
 fn bench_sparsevec_ops(c: &mut Criterion) {

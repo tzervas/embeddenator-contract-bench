@@ -2,8 +2,8 @@ use crate::harness::{measure_fn, BenchConfig};
 use crate::schema::Measurement;
 use crate::VsaVariant;
 // Note: Some internal VSA types are not exposed in embeddenator public API
-// use embeddenator::{BitslicedTritVec, BlockSparseTritVec, CarrySaveBundle, PackedTritVec, ReversibleVSAConfig, SparseVec, DIM};
-use embeddenator::{PackedTritVec, ReversibleVSAConfig, SparseVec, DIM};
+// use embeddenator_vsa::{BitslicedTritVec, BlockSparseTritVec, CarrySaveBundle, PackedTritVec, ReversibleVSAConfig, SparseVec, DIM};
+use embeddenator_vsa::{PackedTritVec, ReversibleVSAConfig, SparseVec, DIM};
 use serde_json::json;
 use std::hint::black_box;
 use std::io;

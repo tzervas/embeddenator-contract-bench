@@ -21,7 +21,7 @@
 //!   neg_indices: [u32; neg_len]
 //! ```
 
-use embeddenator::{SparseVec, DIM};
+use embeddenator_vsa::{SparseVec, DIM};
 use rand::seq::SliceRandom;
 use rand::SeedableRng;
 use rand_chacha::ChaCha8Rng;

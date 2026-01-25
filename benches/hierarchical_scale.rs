@@ -7,7 +7,8 @@
 //! - O(n) scaling validation
 
 use criterion::{black_box, criterion_group, criterion_main, BenchmarkId, Criterion};
-use embeddenator::{EmbrFS, ReversibleVSAConfig};
+use embeddenator_fs::EmbrFS;
+use embeddenator_vsa::ReversibleVSAConfig;
 use std::fs;
 use std::io::Write;
 use tempfile::TempDir;
@@ -179,7 +180,7 @@ fn bench_ingest_scaling(c: &mut Criterion) {
     group.sample_size(10);
 
     let sizes = vec![
-        (1 * 1024 * 1024, "1MB"),
+        (1024 * 1024, "1MB"),
         (5 * 1024 * 1024, "5MB"),
         (10 * 1024 * 1024, "10MB"),
     ];

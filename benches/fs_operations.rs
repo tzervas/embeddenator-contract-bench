@@ -7,7 +7,8 @@
 //! - Tree traversal performance
 
 use criterion::{black_box, criterion_group, criterion_main, BenchmarkId, Criterion};
-use embeddenator::{EmbrFS, ReversibleVSAConfig};
+use embeddenator_fs::EmbrFS;
+use embeddenator_vsa::ReversibleVSAConfig;
 use std::fs;
 use std::io::Write;
 use tempfile::TempDir;
@@ -223,11 +224,9 @@ fn bench_tree_traversal(c: &mut Criterion) {
                     },
                     |temp_dir| {
                         let mut file_count = 0;
-                        for entry in walkdir::WalkDir::new(temp_dir.path()) {
-                            if let Ok(entry) = entry {
-                                if entry.file_type().is_file() {
-                                    file_count += 1;
-                                }
+                        for entry in walkdir::WalkDir::new(temp_dir.path()).into_iter().flatten() {
+                            if entry.file_type().is_file() {
+                                file_count += 1;
                             }
                         }
                         black_box(file_count)

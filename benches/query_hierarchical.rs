@@ -7,9 +7,8 @@
 //! - Beam width parameter tuning
 
 use criterion::{black_box, criterion_group, criterion_main, BenchmarkId, Criterion};
-use embeddenator::{
-    query_hierarchical_codebook, EmbrFS, HierarchicalQueryBounds, ReversibleVSAConfig, SparseVec,
-};
+use embeddenator_fs::{query_hierarchical_codebook, EmbrFS, HierarchicalQueryBounds};
+use embeddenator_vsa::{ReversibleVSAConfig, SparseVec};
 use std::collections::HashMap;
 use std::fs;
 use std::io::Write;

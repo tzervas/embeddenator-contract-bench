@@ -1,8 +1,8 @@
 use crate::harness::{measure_fn, BenchConfig, Profile};
 use crate::schema::Measurement;
-use embeddenator::retrieval::RerankedResult;
-use embeddenator::EmbrFS;
-use embeddenator::ReversibleVSAConfig;
+use embeddenator_fs::EmbrFS;
+use embeddenator_retrieval::RerankedResult;
+use embeddenator_vsa::ReversibleVSAConfig;
 use rayon::prelude::*;
 use serde_json::json;
 use std::cmp::Ordering;
@@ -37,7 +37,7 @@ pub fn run(cfg: &BenchConfig, args: &RetrievalArgs) -> io::Result<Vec<Measuremen
     let engram = &fsys.engram;
     let index = engram.build_codebook_index();
 
-    let mut codebook: Vec<(usize, embeddenator::SparseVec)> = engram
+    let mut codebook: Vec<(usize, embeddenator_vsa::SparseVec)> = engram
         .codebook
         .iter()
         .map(|(k, v)| (*k, v.clone()))
@@ -63,7 +63,7 @@ pub fn run(cfg: &BenchConfig, args: &RetrievalArgs) -> io::Result<Vec<Measuremen
     .min(chunks);
 
     // Deterministic queries: take first N vectors.
-    let query_vecs: Vec<(usize, embeddenator::SparseVec)> =
+    let query_vecs: Vec<(usize, embeddenator_vsa::SparseVec)> =
         codebook.iter().take(queries).cloned().collect();
 
     let warmup = cfg.warmup_iters().min(10);

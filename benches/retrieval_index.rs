@@ -6,11 +6,13 @@
 //! - Query throughput with various corpus sizes
 
 use criterion::{black_box, criterion_group, criterion_main, BenchmarkId, Criterion};
-use embeddenator::{SparseVec, TernaryInvertedIndex};
+use embeddenator_retrieval::TernaryInvertedIndex;
+use embeddenator_vsa::{ReversibleVSAConfig, SparseVec};
 
 /// Benchmark retrieval index construction and query performance
 fn bench_retrieval_index(c: &mut Criterion) {
     let mut group = c.benchmark_group("retrieval_index");
+    let config = ReversibleVSAConfig::default();
 
     // Build a deterministic corpus at various scales
     let corpus_sizes = [100usize, 500, 1_000, 5_000, 10_000];
@@ -21,7 +23,11 @@ fn bench_retrieval_index(c: &mut Criterion) {
             bencher.iter(|| {
                 let mut index = TernaryInvertedIndex::new();
                 for i in 0..n {
-                    let v = SparseVec::from_data(black_box(format!("doc-{i}").as_bytes()));
+                    let v = SparseVec::encode_data(
+                        black_box(format!("doc-{i}").as_bytes()),
+                        &config,
+                        None,
+                    );
                     index.add(i, &v);
                 }
                 index.finalize();
@@ -32,7 +38,7 @@ fn bench_retrieval_index(c: &mut Criterion) {
         // Build once for query benchmarks
         let mut index = TernaryInvertedIndex::new();
         for i in 0..n {
-            let v = SparseVec::from_data(format!("doc-{i}").as_bytes());
+            let v = SparseVec::encode_data(format!("doc-{i}").as_bytes(), &config, None);
             index.add(i, &v);
         }
         index.finalize();
@@ -43,7 +49,7 @@ fn bench_retrieval_index(c: &mut Criterion) {
                 continue; // Skip if k is too large for corpus
             }
 
-            let query = SparseVec::from_data(b"doc-123");
+            let query = SparseVec::encode_data(b"doc-123", &config, None);
             group.bench_with_input(
                 BenchmarkId::new(format!("query_top_k_{k}"), n),
                 &(n, k),
@@ -63,19 +69,20 @@ fn bench_retrieval_index(c: &mut Criterion) {
 /// Benchmark query throughput with batched queries
 fn bench_query_throughput(c: &mut Criterion) {
     let mut group = c.benchmark_group("query_throughput");
+    let config = ReversibleVSAConfig::default();
 
     // Build a medium-sized index
     let corpus_size = 5_000;
     let mut index = TernaryInvertedIndex::new();
     for i in 0..corpus_size {
-        let v = SparseVec::from_data(format!("doc-{i}").as_bytes());
+        let v = SparseVec::encode_data(format!("doc-{i}").as_bytes(), &config, None);
         index.add(i, &v);
     }
     index.finalize();
 
     // Prepare multiple queries
     let queries: Vec<SparseVec> = (0..100)
-        .map(|i| SparseVec::from_data(format!("query-{i}").as_bytes()))
+        .map(|i| SparseVec::encode_data(format!("query-{i}").as_bytes(), &config, None))
         .collect();
 
     group.bench_function("batch_100_queries", |bencher| {
@@ -94,6 +101,7 @@ fn bench_query_throughput(c: &mut Criterion) {
 fn bench_index_scaling(c: &mut Criterion) {
     let mut group = c.benchmark_group("index_scaling");
     group.sample_size(10); // Fewer samples for large operations
+    let config = ReversibleVSAConfig::default();
 
     let scales = [1_000, 5_000, 10_000, 20_000];
 
@@ -103,7 +111,8 @@ fn bench_index_scaling(c: &mut Criterion) {
                 || {
                     let mut index = TernaryInvertedIndex::new();
                     for i in 0..n {
-                        let v = SparseVec::from_data(format!("doc-{i}").as_bytes());
+                        let v =
+                            SparseVec::encode_data(format!("doc-{i}").as_bytes(), &config, None);
                         index.add(i, &v);
                     }
                     index

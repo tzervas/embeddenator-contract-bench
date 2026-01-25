@@ -10,7 +10,7 @@ use criterion::{
     black_box, criterion_group, criterion_main, AxisScale, BenchmarkId, Criterion,
     PlotConfiguration,
 };
-use embeddenator::{ReversibleVSAConfig, SparseVec};
+use embeddenator_vsa::{ReversibleVSAConfig, SparseVec};
 
 /// Benchmark scalar vs SIMD cosine with real data patterns
 fn bench_cosine_scalar_vs_simd(c: &mut Criterion) {
