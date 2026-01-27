@@ -21,7 +21,7 @@
 //!   neg_indices: [u32; neg_len]
 //! ```
 
-use embeddenator::{SparseVec, DIM};
+use embeddenator_vsa::{SparseVec, DIM};
 use rand::seq::SliceRandom;
 use rand::SeedableRng;
 use rand_chacha::ChaCha8Rng;
@@ -441,7 +441,8 @@ impl DatasetReader {
     /// Reset reader to the beginning of the dataset.
     pub fn reset(&mut self) -> io::Result<()> {
         use std::io::Seek;
-        self.reader.seek(std::io::SeekFrom::Start(HEADER_SIZE as u64))?;
+        self.reader
+            .seek(std::io::SeekFrom::Start(HEADER_SIZE as u64))?;
         self.current_index = 0;
         Ok(())
     }

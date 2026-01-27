@@ -1,8 +1,8 @@
 use std::hint::black_box;
 use std::time::Instant;
 
-use rand_chacha::ChaCha8Rng;
 use rand_chacha::rand_core::SeedableRng;
+use rand_chacha::ChaCha8Rng;
 
 #[derive(Clone, Copy, Debug)]
 pub enum Profile {

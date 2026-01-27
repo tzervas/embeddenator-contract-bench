@@ -171,6 +171,8 @@ fn git_sha_short() -> Option<String> {
         .map(|s| s.chars().take(12).collect())
 }
 
+// Note: parse_codec temporarily disabled due to unavailable envelope API
+/*
 fn parse_codec(s: &str) -> io::Result<embeddenator::envelope::CompressionCodec> {
     match s.to_ascii_lowercase().as_str() {
         "none" => Ok(embeddenator::envelope::CompressionCodec::None),
@@ -179,6 +181,7 @@ fn parse_codec(s: &str) -> io::Result<embeddenator::envelope::CompressionCodec> 
         _ => Err(io::Error::other(format!("unknown codec: {s} (none|zstd|lz4)"))),
     }
 }
+*/
 
 /// Format vector count as human-readable suffix (10k, 100k, 1m, etc.)
 fn format_count(count: u64) -> String {
@@ -207,12 +210,19 @@ fn main() -> io::Result<()> {
             }
         }
         Command::Encode {
-            input,
-            prefix,
-            codec,
-            level,
-            verify,
+            input: _,
+            prefix: _,
+            codec: _,
+            level: _,
+            verify: _,
         } => {
+            // Note: encode benchmarks temporarily disabled due to unavailable IO APIs
+            eprintln!("Encode benchmarks are temporarily disabled");
+            return Err(std::io::Error::new(
+                std::io::ErrorKind::Unsupported,
+                "encode benchmarks temporarily disabled",
+            ));
+            /*
             let codec = parse_codec(codec)?;
             let enc_args = benches::encode::EncodeArgs {
                 inputs: input.clone(),
@@ -222,6 +232,7 @@ fn main() -> io::Result<()> {
                 verify: *verify,
             };
             measurements.extend(benches::encode::run(&cfg, &enc_args)?);
+            */
         }
         Command::Retrieval {
             input_dir,
@@ -240,14 +251,17 @@ fn main() -> io::Result<()> {
         Command::Suite {
             input,
             retrieval_input_dir,
-            codec,
-            level,
-            verify,
+            codec: _,
+            level: _,
+            verify: _,
             variant,
         } => {
             measurements.extend(benches::vsa::run(&cfg, *variant));
 
             if !input.is_empty() {
+                // Note: encode benchmarks temporarily disabled due to unavailable IO APIs
+                eprintln!("Warning: Encode benchmarks are temporarily disabled");
+                /*
                 let codec = parse_codec(codec)?;
                 let enc_args = benches::encode::EncodeArgs {
                     inputs: input.clone(),
@@ -257,6 +271,7 @@ fn main() -> io::Result<()> {
                     verify: *verify,
                 };
                 measurements.extend(benches::encode::run(&cfg, &enc_args)?);
+                */
             }
 
             if let Some(dir) = retrieval_input_dir {
@@ -296,8 +311,10 @@ fn main() -> io::Result<()> {
             );
             let filepath = output.join(&filename);
 
-            eprintln!("Generating {} vectors (dim={}, sparsity={}, seed={})...",
-                count, dimension, sparsity, seed);
+            eprintln!(
+                "Generating {} vectors (dim={}, sparsity={}, seed={})...",
+                count, dimension, sparsity, seed
+            );
 
             let start = std::time::Instant::now();
             // Stream directly to disk to avoid materializing Vec<SparseVec> (RAM spike at 1M+).
@@ -305,16 +322,22 @@ fn main() -> io::Result<()> {
             let elapsed = start.elapsed();
 
             let file_size = fs::metadata(&filepath)?.len();
-            eprintln!("Wrote {:.2} MB in {:.2}s ({:.1} MB/s, {:.0} vec/s)",
+            eprintln!(
+                "Wrote {:.2} MB in {:.2}s ({:.1} MB/s, {:.0} vec/s)",
                 file_size as f64 / 1_048_576.0,
                 elapsed.as_secs_f64(),
                 (file_size as f64 / 1_048_576.0) / elapsed.as_secs_f64(),
-                (*count as f64) / elapsed.as_secs_f64());
+                (*count as f64) / elapsed.as_secs_f64()
+            );
 
             eprintln!("\nDataset saved: {}", filepath.display());
             eprintln!("  Vectors: {}", count);
             eprintln!("  Dimension: {}", dimension);
-            eprintln!("  Sparsity: {} per sign (~{:.1}% density)", sparsity, (sparsity * 2) as f64 / *dimension as f64 * 100.0);
+            eprintln!(
+                "  Sparsity: {} per sign (~{:.1}% density)",
+                sparsity,
+                (sparsity * 2) as f64 / *dimension as f64 * 100.0
+            );
             eprintln!("  Seed: {}", seed);
             eprintln!("  File size: {:.2} MB", file_size as f64 / 1_048_576.0);
 

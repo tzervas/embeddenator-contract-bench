@@ -1,16 +1,12 @@
-use crate::schema::Measurement;
-use crate::{harness::BenchConfig, harness::measure_fn};
-use embeddenator::EmbrFS;
-use embeddenator::{BinaryWriteOptions, CompressionCodec, PayloadKind, envelope};
-use embeddenator::ReversibleVSAConfig;
-use serde_json::json;
+// Note: envelope and some IO types not exposed in public API - commenting out for now
+// use embeddenator::{BinaryWriteOptions, CompressionCodec, PayloadKind, envelope};
 use sha2::{Digest, Sha256};
-use std::collections::BTreeMap;
 use std::fs;
 use std::io;
 use std::path::{Path, PathBuf};
-use tempfile::TempDir;
 
+// Note: Temporarily commented out until IO APIs are exposed
+/*
 #[derive(Clone, Debug)]
 pub struct EncodeArgs {
     pub inputs: Vec<PathBuf>,
@@ -19,12 +15,15 @@ pub struct EncodeArgs {
     pub codec_level: Option<i32>,
     pub verify: bool,
 }
+*/
 
+#[allow(dead_code)]
 fn sha256_file(path: &Path) -> io::Result<[u8; 32]> {
     let bytes = fs::read(path)?;
     Ok(Sha256::digest(&bytes).into())
 }
 
+#[allow(dead_code)]
 fn hex32(d: [u8; 32]) -> String {
     let mut s = String::with_capacity(64);
     for b in d {
@@ -33,6 +32,7 @@ fn hex32(d: [u8; 32]) -> String {
     s
 }
 
+#[allow(dead_code)]
 fn collect_files(root: &Path) -> io::Result<Vec<PathBuf>> {
     let mut out = Vec::new();
     if root.is_file() {
@@ -50,6 +50,7 @@ fn collect_files(root: &Path) -> io::Result<Vec<PathBuf>> {
     Ok(out)
 }
 
+#[allow(dead_code)]
 fn logical_prefix_for_input(input: &Path, explicit: Option<&str>) -> String {
     if let Some(p) = explicit {
         return p.to_string();
@@ -61,6 +62,8 @@ fn logical_prefix_for_input(input: &Path, explicit: Option<&str>) -> String {
         .to_string()
 }
 
+// Note: run function temporarily commented out until IO APIs are exposed
+/*
 pub fn run(cfg: &BenchConfig, args: &EncodeArgs) -> io::Result<Vec<Measurement>> {
     if args.inputs.is_empty() {
         return Err(io::Error::other("at least one input is required"));
@@ -218,3 +221,4 @@ pub fn run(cfg: &BenchConfig, args: &EncodeArgs) -> io::Result<Vec<Measurement>>
 
     Ok(out)
 }
+*/
