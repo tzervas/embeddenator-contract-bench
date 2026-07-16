@@ -1,11 +1,8 @@
 name: CI
 
+# Manual only — no push/pull_request CI triggers
 on:
-  push:
-    branches: [main, develop]
-  pull_request:
-    types: [opened, synchronize, reopened]
-
+  workflow_dispatch:
 permissions:
   contents: read
   checks: write
