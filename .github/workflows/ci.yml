@@ -2,6 +2,16 @@ name: CI
 
 # Manual only — no push/pull_request CI triggers
 on:
+  push:
+    branches:
+      - main
+      - dev
+      - develop
+  pull_request:
+    branches:
+      - main
+      - dev
+      - develop
   workflow_dispatch:
 permissions:
   contents: read
@@ -14,7 +24,7 @@ env:
 jobs:
   build-and-test:
     name: Build and Test
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, linux, x64, podman]
     timeout-minutes: 20
     steps:
       - uses: actions/checkout@v7
