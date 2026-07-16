@@ -66,7 +66,7 @@ fn bench_cosine_scalar_vs_simd(c: &mut Criterion) {
             BenchmarkId::new("simd", name),
             &(&a, &b),
             |bencher, (a, b)| {
-                bencher.iter(|| embeddenator::simd_cosine::cosine_simd(black_box(a), black_box(b)))
+                bencher.iter(|| embeddenator_vsa::simd_cosine::cosine_simd(black_box(a), black_box(b)))
             },
         );
     }
@@ -116,7 +116,7 @@ fn bench_cosine_synthetic_sparsity(c: &mut Criterion) {
             BenchmarkId::new("simd", sparsity),
             &(&a, &b),
             |bencher, (a, b)| {
-                bencher.iter(|| embeddenator::simd_cosine::cosine_simd(black_box(a), black_box(b)))
+                bencher.iter(|| embeddenator_vsa::simd_cosine::cosine_simd(black_box(a), black_box(b)))
             },
         );
     }
@@ -158,7 +158,7 @@ fn bench_cosine_query_workload(c: &mut Criterion) {
         bencher.iter(|| {
             for doc in &documents {
                 let _score =
-                    embeddenator::simd_cosine::cosine_simd(black_box(&query), black_box(doc));
+                    embeddenator_vsa::simd_cosine::cosine_simd(black_box(&query), black_box(doc));
                 black_box(_score);
             }
         })
@@ -210,7 +210,7 @@ fn bench_cosine_overlap_patterns(c: &mut Criterion) {
             BenchmarkId::new("simd", format!("overlap_{}pct", overlap_pct)),
             &(&a, &b),
             |bencher, (a, b)| {
-                bencher.iter(|| embeddenator::simd_cosine::cosine_simd(black_box(a), black_box(b)))
+                bencher.iter(|| embeddenator_vsa::simd_cosine::cosine_simd(black_box(a), black_box(b)))
             },
         );
     }

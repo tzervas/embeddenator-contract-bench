@@ -116,7 +116,7 @@ pub fn run(cfg: &BenchConfig, args: &EncodeArgs) -> io::Result<Vec<Measurement>>
     let mut last_verify = None;
 
     let m = measure_fn(iters, warmup, || {
-        let mut fsys = EmbrFS::new();
+        let mut fsys = EmbrFS::new_holographic();
         for input in &args.inputs {
             if input.is_dir() {
                 let prefix = logical_prefix_for_input(input, args.prefix.as_deref());

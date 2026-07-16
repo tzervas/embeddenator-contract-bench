@@ -93,7 +93,7 @@ fn bench_embrfs_ingest(c: &mut Criterion) {
                     || {
                         let temp_dir = TempDir::new().unwrap();
                         create_test_files(&temp_dir, count, file_size);
-                        (temp_dir, EmbrFS::new())
+                        (temp_dir, EmbrFS::new_holographic())
                     },
                     |(temp_dir, mut fs)| {
                         fs.ingest_directory(temp_dir.path(), false, &config)
@@ -126,7 +126,7 @@ fn bench_embrfs_nested(c: &mut Criterion) {
                     || {
                         let temp_dir = TempDir::new().unwrap();
                         create_nested_structure(&temp_dir, depth, files, 500);
-                        (temp_dir, EmbrFS::new())
+                        (temp_dir, EmbrFS::new_holographic())
                     },
                     |(temp_dir, mut fs)| {
                         fs.ingest_directory(temp_dir.path(), false, &config)
@@ -152,7 +152,7 @@ fn bench_embrfs_extract(c: &mut Criterion) {
     let temp_dir = TempDir::new().unwrap();
     create_test_files(&temp_dir, 50, 1024);
 
-    let mut fs = EmbrFS::new();
+    let mut fs = EmbrFS::new_holographic();
     fs.ingest_directory(temp_dir.path(), false, &config)
         .unwrap();
 
@@ -183,7 +183,7 @@ fn bench_embrfs_metadata(c: &mut Criterion) {
     let temp_dir = TempDir::new().unwrap();
     create_test_files(&temp_dir, 100, 1024);
 
-    let mut fs = EmbrFS::new();
+    let mut fs = EmbrFS::new_holographic();
     fs.ingest_directory(temp_dir.path(), false, &config)
         .unwrap();
 
