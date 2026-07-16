@@ -31,7 +31,7 @@ pub fn run(cfg: &BenchConfig, args: &RetrievalArgs) -> io::Result<Vec<Measuremen
     }
 
     let config = ReversibleVSAConfig::default();
-    let mut fsys = EmbrFS::new();
+    let mut fsys = EmbrFS::new_holographic();
     fsys.ingest_directory(&args.input_dir, false, &config)?;
 
     let engram = &fsys.engram;

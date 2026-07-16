@@ -67,7 +67,7 @@ fn bench_hierarchical_bundling(c: &mut Criterion) {
                     || {
                         let temp_dir = TempDir::new().unwrap();
                         create_test_structure(&temp_dir, size, depth, files);
-                        let mut fs = EmbrFS::new();
+                        let mut fs = EmbrFS::new_holographic();
                         fs.ingest_directory(temp_dir.path(), false, &config)
                             .unwrap();
                         (fs, temp_dir)
@@ -91,7 +91,7 @@ fn bench_hierarchical_bundling(c: &mut Criterion) {
                     || {
                         let temp_dir = TempDir::new().unwrap();
                         create_test_structure(&temp_dir, size, depth, files);
-                        let mut fs = EmbrFS::new();
+                        let mut fs = EmbrFS::new_holographic();
                         fs.ingest_directory(temp_dir.path(), false, &config)
                             .unwrap();
                         (fs, temp_dir)
@@ -116,7 +116,7 @@ fn bench_hierarchical_bundling(c: &mut Criterion) {
                     || {
                         let temp_dir = TempDir::new().unwrap();
                         create_test_structure(&temp_dir, size, depth, files);
-                        let mut fs = EmbrFS::new();
+                        let mut fs = EmbrFS::new_holographic();
                         fs.ingest_directory(temp_dir.path(), false, &config)
                             .unwrap();
                         (fs, temp_dir)
@@ -157,7 +157,7 @@ fn bench_bundle_memory_scaling(c: &mut Criterion) {
                     || {
                         let temp_dir = TempDir::new().unwrap();
                         create_test_structure(&temp_dir, size, 3, 10);
-                        let mut fs = EmbrFS::new();
+                        let mut fs = EmbrFS::new_holographic();
                         fs.ingest_directory(temp_dir.path(), false, &config)
                             .unwrap();
                         (fs, temp_dir)
@@ -196,7 +196,7 @@ fn bench_ingest_scaling(c: &mut Criterion) {
                     || {
                         let temp_dir = TempDir::new().unwrap();
                         create_test_structure(&temp_dir, size, 2, 5);
-                        (temp_dir, EmbrFS::new())
+                        (temp_dir, EmbrFS::new_holographic())
                     },
                     |(temp_dir, mut fs)| {
                         fs.ingest_directory(temp_dir.path(), false, &config)
